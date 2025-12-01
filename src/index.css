@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Fashion-forward warm palette */
+    --background: 35 20% 97%;
+    --foreground: 25 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 25 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 25% 15%;
+
+    /* Terracotta/rust primary */
+    --primary: 15 65% 55%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Warm secondary */
+    --secondary: 35 30% 90%;
+    --secondary-foreground: 25 25% 15%;
+
+    --muted: 35 20% 92%;
+    --muted-foreground: 25 15% 45%;
+
+    /* Coral accent */
+    --accent: 10 75% 65%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 35 15% 88%;
+    --input: 35 15% 88%;
+    --ring: 15 65% 55%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 35 20% 97%;
+    --sidebar-foreground: 25 25% 15%;
+    --sidebar-primary: 15 65% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 35 30% 90%;
+    --sidebar-accent-foreground: 25 25% 15%;
+    --sidebar-border: 35 15% 88%;
+    --sidebar-ring: 15 65% 55%;
+
+    /* Custom gradients */
+    --gradient-warm: linear-gradient(135deg, hsl(15 65% 55%), hsl(25 70% 60%));
+    --gradient-subtle: linear-gradient(180deg, hsl(35 20% 97%), hsl(35 25% 92%));
+    
+    /* Shadows */
+    --shadow-soft: 0 2px 20px -5px hsl(15 65% 55% / 0.15);
+    --shadow-card: 0 4px 24px -8px hsl(15 30% 30% / 0.12);
+  }
+
+  .dark {
+    --background: 25 25% 12%;
+    --foreground: 35 15% 95%;
+
+    --card: 25 25% 15%;
+    --card-foreground: 35 15% 95%;
+
+    --popover: 25 25% 15%;
+    --popover-foreground: 35 15% 95%;
+
+    --primary: 15 70% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 25 20% 20%;
+    --secondary-foreground: 35 15% 95%;
+
+    --muted: 25 20% 20%;
+    --muted-foreground: 35 12% 60%;
+
+    --accent: 10 75% 65%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 25 20% 25%;
+    --input: 25 20% 25%;
+    --ring: 15 70% 60%;
+    
+    --sidebar-background: 25 25% 12%;
+    --sidebar-foreground: 35 15% 95%;
+    --sidebar-primary: 15 70% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 25 20% 20%;
+    --sidebar-accent-foreground: 35 15% 95%;
+    --sidebar-border: 25 20% 25%;
+    --sidebar-ring: 15 70% 60%;
+    
+    --shadow-soft: 0 2px 20px -5px hsl(0 0% 0% / 0.4);
+    --shadow-card: 0 4px 24px -8px hsl(0 0% 0% / 0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
