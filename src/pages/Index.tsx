@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ClothingCard from "@/components/ClothingCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface ClothingItem {
   id: string;
@@ -28,7 +29,9 @@ const Index = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [clothingItems, setClothingItems] = useState<ClothingItem[]>([]);
-  const [looks, setLooks] = useState<Look[]>([]);
+  const [looks, setLooks] = useState<any[]>([]);
+  const [selectedLook, setSelectedLook] = useState<any | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -63,13 +66,19 @@ const Index = () => {
   const fetchLooks = async () => {
     const { data, error } = await supabase
       .from("looks")
-      .select("*")
+      .select("*, look_items:look_items(clothing_items(*))")
       .order("created_at", { ascending: false });
 
     if (error) {
       console.error(error);
     } else {
-      setLooks(data || []);
+      const enriched = (data || []).map((look: any) => ({
+        ...look,
+        items: (look.look_items || [])
+          .map((li: any) => li.clothing_items)
+          .filter(Boolean),
+      }));
+      setLooks(enriched);
     }
   };
 
@@ -144,7 +153,7 @@ const Index = () => {
                 <p className="text-muted-foreground mb-4">
                   Nenhum look salvo ainda
                 </p>
-                <Button onClick={() => navigate("/generate-looks")}>
+                <Button onClick={() => navigate("/generate-looks")}> 
                   <Plus className="w-4 h-4 mr-2" />
                   Gerar primeiro look
                 </Button>
@@ -152,10 +161,24 @@ const Index = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {looks.map((look) => (
-                  <div key={look.id} className="p-4 bg-card rounded-lg shadow-card">
+                  <button
+                    key={look.id}
+                    className="text-left p-4 bg-card rounded-lg shadow-card hover:shadow-soft transition-shadow"
+                    onClick={() => {
+                      setSelectedLook(look);
+                      setDetailsOpen(true);
+                    }}
+                  >
                     <h3 className="font-medium">{look.name}</h3>
                     <p className="text-sm text-muted-foreground">{look.occasion}</p>
-                  </div>
+                    <div className="mt-3 grid grid-cols-3 gap-2">
+                      {look.items?.slice(0, 3).map((item: ClothingItem, i: number) => (
+                        <div key={i} className="aspect-square bg-muted rounded-lg overflow-hidden">
+                          <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                  </button>
                 ))}
               </div>
             )}
@@ -172,6 +195,32 @@ const Index = () => {
       </Button>
 
       <BottomNav />
+
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{selectedLook?.name}</DialogTitle>
+            <DialogDescription>{selectedLook?.occasion}</DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-3 gap-2">
+            {selectedLook?.items?.map((item: ClothingItem) => (
+              <div key={item.id} className="aspect-square bg-muted rounded-lg overflow-hidden">
+                <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 space-y-2">
+            {selectedLook?.items?.map((item: ClothingItem) => (
+              <div key={item.id} className="flex items-center justify-between p-2 border rounded-md">
+                <div>
+                  <p className="text-sm font-medium">{item.name}</p>
+                  <p className="text-xs text-muted-foreground">{item.category}{item.color ? ` • ${item.color}` : ""}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
