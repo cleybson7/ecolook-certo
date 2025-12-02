@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Plus, LogOut } from "lucide-react";
+import { Plus, LogOut, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ClothingCard from "@/components/ClothingCard";
@@ -82,6 +82,22 @@ const Index = () => {
     }
   };
 
+  const deleteLook = async (id: string) => {
+    if (!confirm("Deseja excluir este look?")) return;
+    const { error } = await supabase
+      .from("looks")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      toast.error("Erro ao excluir look");
+    } else {
+      toast.success("Look excluído");
+      fetchLooks();
+    }
+  };
+
   const handleDeleteItem = async (id: string) => {
     const { error } = await supabase
       .from("clothing_items")
@@ -153,7 +169,7 @@ const Index = () => {
                 <p className="text-muted-foreground mb-4">
                   Nenhum look salvo ainda
                 </p>
-                <Button onClick={() => navigate("/generate-looks")}> 
+                <Button onClick={() => navigate("/generate-looks")}>
                   <Plus className="w-4 h-4 mr-2" />
                   Gerar primeiro look
                 </Button>
@@ -161,14 +177,26 @@ const Index = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {looks.map((look) => (
-                  <button
+                  <div
                     key={look.id}
-                    className="text-left p-4 bg-card rounded-lg shadow-card hover:shadow-soft transition-shadow"
+                    className="relative text-left p-4 bg-card rounded-lg shadow-card hover:shadow-soft transition-shadow cursor-pointer"
                     onClick={() => {
                       setSelectedLook(look);
                       setDetailsOpen(true);
                     }}
                   >
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteLook(look.id);
+                      }}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+
                     <h3 className="font-medium">{look.name}</h3>
                     <p className="text-sm text-muted-foreground">{look.occasion}</p>
                     <div className="mt-3 grid grid-cols-3 gap-2">
@@ -178,7 +206,7 @@ const Index = () => {
                         </div>
                       ))}
                     </div>
-                  </button>
+                  </div>
                 ))}
               </div>
             )}

@@ -23,6 +23,7 @@ const GenerateLooks = () => {
   const [loading, setLoading] = useState(false);
   const [occasion, setOccasion] = useState("");
   const [generatedLooks, setGeneratedLooks] = useState<any[]>([]);
+  const [noResults, setNoResults] = useState(false);
 
   const fetchItemsByIds = async (ids: string[]) => {
     const { data, error } = await supabase
@@ -55,11 +56,16 @@ const GenerateLooks = () => {
         const looksWithDetails = await Promise.all(
           data.looks.map(async (look: any) => {
             const itemsData = await fetchItemsByIds(look.items);
-            return { ...look, itemsData };
+            return { ...look, itemsData, saved: false, saving: false };
           })
         );
         setGeneratedLooks(looksWithDetails);
-        toast.success(`${looksWithDetails.length} looks gerados!`);
+        if ((looksWithDetails.length || 0) === 0) {
+          setNoResults(true);
+        } else {
+          setNoResults(false);
+          toast.success(`${looksWithDetails.length} looks gerados!`);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -69,12 +75,16 @@ const GenerateLooks = () => {
     }
   };
 
-  const saveLook = async (look: any) => {
+  const saveLook = async (look: any, index?: number) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
 
-      // Save look
+      if (typeof index === "number") {
+        setGeneratedLooks((prev) => prev.map((g, i) => (i === index ? { ...g, saving: true } : g)));
+      }
+
+      // Save look (include description)
       const { data: lookData, error: lookError } = await supabase
         .from("looks")
         .insert({
@@ -99,10 +109,17 @@ const GenerateLooks = () => {
 
       if (itemsError) throw itemsError;
 
+      if (typeof index === "number") {
+        setGeneratedLooks((prev) => prev.map((g, i) => (i === index ? { ...g, saving: false, saved: true } : g)));
+      }
+
       toast.success("Look salvo com sucesso!");
     } catch (error) {
       console.error(error);
       toast.error("Erro ao salvar look");
+      if (typeof index === "number") {
+        setGeneratedLooks((prev) => prev.map((g, i) => (i === index ? { ...g, saving: false } : g)));
+      }
     }
   };
 
@@ -125,7 +142,7 @@ const GenerateLooks = () => {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="occasion">Ocasião</Label>
-              <Select value={occasion} onValueChange={setOccasion}>
+              <Select value={occasion} onValueChange={(v) => { setOccasion(v); setNoResults(false); }}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione a ocasião" />
                 </SelectTrigger>
@@ -141,14 +158,19 @@ const GenerateLooks = () => {
               </Select>
             </div>
 
-            <Button
-              onClick={handleGenerate}
-              disabled={loading}
-              className="w-full"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              {loading ? "Gerando..." : "Gerar Looks com IA"}
-            </Button>
+            <div>
+              <Button
+                onClick={handleGenerate}
+                disabled={loading}
+                className="w-full"
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                {loading ? "Gerando..." : "Gerar Looks com IA"}
+              </Button>
+              {noResults && (
+                <p className="mt-2 text-sm text-destructive">Nenhum look compatível foi gerado para essa ocasião. Tente outra combinação ou adicione mais peças.</p>
+              )}
+            </div>
           </CardContent>
         </Card>
 
@@ -165,9 +187,11 @@ const GenerateLooks = () => {
                     </div>
                     <Button
                       size="sm"
-                      onClick={() => saveLook(look)}
+                      onClick={() => saveLook(look, index)}
+                      disabled={look.saving || look.saved}
+                      className={look.saved ? "opacity-50 cursor-not-allowed bg-muted" : ""}
                     >
-                      Salvar
+                      {look.saving ? "Salvando..." : look.saved ? "Salvo" : "Salvar"}
                     </Button>
                   </div>
                   <div className="grid grid-cols-3 gap-2">

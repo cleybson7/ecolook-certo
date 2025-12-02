@@ -18,10 +18,10 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 25 25% 15%;
 
-    /* Terracotta/rust primary */
-    --primary: 15 65% 55%;
+    /* Primary: pastel green (based on #3D9970, slightly darker) */
+    --primary: 153 45% 40%;
     --primary-foreground: 0 0% 100%;
-    
+
     /* Warm secondary */
     --secondary: 35 30% 90%;
     --secondary-foreground: 25 25% 15%;
@@ -29,8 +29,8 @@ All colors MUST be HSL.
     --muted: 35 20% 92%;
     --muted-foreground: 25 15% 45%;
 
-    /* Coral accent */
-    --accent: 10 75% 65%;
+    /* Accent changed from coral to complementary pastel green */
+    --accent: 153 40% 62%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
@@ -38,26 +38,26 @@ All colors MUST be HSL.
 
     --border: 35 15% 88%;
     --input: 35 15% 88%;
-    --ring: 15 65% 55%;
+    --ring: 153 45% 40%;
 
     --radius: 1rem;
 
     --sidebar-background: 35 20% 97%;
     --sidebar-foreground: 25 25% 15%;
-    --sidebar-primary: 15 65% 55%;
+    --sidebar-primary: 153 45% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 35 30% 90%;
     --sidebar-accent-foreground: 25 25% 15%;
     --sidebar-border: 35 15% 88%;
-    --sidebar-ring: 15 65% 55%;
+    --sidebar-ring: 153 45% 40%;
 
     /* Custom gradients */
-    --gradient-warm: linear-gradient(135deg, hsl(15 65% 55%), hsl(25 70% 60%));
+    --gradient-warm: linear-gradient(135deg, hsl(153 45% 40%), hsl(153 40% 62%));
     --gradient-subtle: linear-gradient(180deg, hsl(35 20% 97%), hsl(35 25% 92%));
-    
+
     /* Shadows */
-    --shadow-soft: 0 2px 20px -5px hsl(15 65% 55% / 0.15);
-    --shadow-card: 0 4px 24px -8px hsl(15 30% 30% / 0.12);
+    --shadow-soft: 0 2px 20px -5px hsl(153 45% 40% / 0.15);
+    --shadow-card: 0 4px 24px -8px hsl(153 20% 15% / 0.12);
   }
 
   .dark {
@@ -70,7 +70,7 @@ All colors MUST be HSL.
     --popover: 25 25% 15%;
     --popover-foreground: 35 15% 95%;
 
-    --primary: 15 70% 60%;
+    --primary: 153 50% 48%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 25 20% 20%;
@@ -79,7 +79,7 @@ All colors MUST be HSL.
     --muted: 25 20% 20%;
     --muted-foreground: 35 12% 60%;
 
-    --accent: 10 75% 65%;
+    --accent: 153 40% 62%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62% 45%;
@@ -87,17 +87,17 @@ All colors MUST be HSL.
 
     --border: 25 20% 25%;
     --input: 25 20% 25%;
-    --ring: 15 70% 60%;
-    
+    --ring: 153 50% 48%;
+
     --sidebar-background: 25 25% 12%;
     --sidebar-foreground: 35 15% 95%;
-    --sidebar-primary: 15 70% 60%;
+    --sidebar-primary: 153 50% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 25 20% 20%;
     --sidebar-accent-foreground: 35 15% 95%;
     --sidebar-border: 25 20% 25%;
-    --sidebar-ring: 15 70% 60%;
-    
+    --sidebar-ring: 153 50% 48%;
+
     --shadow-soft: 0 2px 20px -5px hsl(0 0% 0% / 0.4);
     --shadow-card: 0 4px 24px -8px hsl(0 0% 0% / 0.3);
   }
